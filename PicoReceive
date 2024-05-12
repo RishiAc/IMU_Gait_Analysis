@@ -1,0 +1,35 @@
+#import time
+import socket
+#import machine
+import serial
+bufferSize = 1024
+from time import sleep
+ServerPort = 2222
+ServerIP = '192.168.0.101'
+import pylsl
+
+RPIsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+RPIsocket.bind((ServerIP, ServerPort))#changed ServerIP to ''
+
+print('Server is running')
+message, address = RPIsocket.recvfrom(bufferSize)
+#ser = serial.Serial('COM5', 9600, timeout=0.050)
+#ser.open()
+channel_names = ["Ax","Ay","Az","pitch","roll","packetCount", "timeUs"]
+n_channels = len(channel_names)
+
+info = pylsl.StreamInfo("PicoStream", "IMU", n_channels, 100, pylsl.cf_float32, "myuid12345")
+outlet = pylsl.StreamOutlet(info)
+recvPacket =0
+while True:
+    message, address = RPIsocket.recvfrom(bufferSize)
+
+    message = message.decode('utf-8')
+    recvPacket +=1
+    print(message)
+    array1 = message.split("#")
+    #print(recvPacket)
+    pushSample = [float(array1[0]),float(array1[1]),float(array1[2]),float(array1[3]),float(array1[4]),float(array1[5]), float(array1[6])]
+    #ser.write(message)
+    outlet.push_sample(pushSample)
+    
