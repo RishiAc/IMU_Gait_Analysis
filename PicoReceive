@@ -5,7 +5,7 @@ import serial
 bufferSize = 1024
 from time import sleep
 ServerPort = 2222
-ServerIP = '192.168.0.101'
+ServerIP = '10.0.0.31'
 import pylsl
 
 RPIsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -28,7 +28,7 @@ while True:
     recvPacket +=1
     print(message)
     array1 = message.split("#")
-    #print(recvPacket)
+    print(recvPacket)
     pushSample = [float(array1[0]),float(array1[1]),float(array1[2]),float(array1[3]),float(array1[4]),float(array1[5]), float(array1[6])]
     #ser.write(message)
     outlet.push_sample(pushSample)
